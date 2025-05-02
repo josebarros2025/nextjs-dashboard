@@ -27,16 +27,15 @@ export async function authenticate(
 ) {
   try {
     await signIn('credentials', formData);
-  } catch (error) {
+  } catch (error: unknown) {
+    console.log("Login error:", error);
     if (error instanceof AuthError) {
-      switch (error.type) {
-        case 'CredentialsSignin':
-          return 'Invalid credentials';
-        default:
-          return 'Something went wrong';
+      const cause = error.cause as { err?: { code?: string } };
+      if (cause?.err?.code === "credentials") {
       }
     }
     throw error;
+    //return { error: "Error de autenticación 500" };
   }
 }
 
